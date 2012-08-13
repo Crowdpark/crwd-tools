@@ -1,0 +1,30 @@
+#!/bin/bash
+
+DATE=$(date +%Y%m%d%H%M)
+
+SERVER_IP=$1
+
+#Fecthing data
+/usr/bin/curl  "http://$(SERVER_IP):8092/default/_design/users/_view/backup?stale=update_after&connection_timeout=60000" > /tmp/backup_tmp
+
+
+LINES=`wc -l  /tmp/backup_tmp | awk '{print $1}'`
+#Some simple checking for content
+if [ "$LINES" -lt "5" ] ; then
+	echo "Too few lines, curl command probably got an unexpected answer"
+else
+	python ./backup_couch.py -f /tmp/backup_tmp -a $(SERVER_IP):11211 -o /tmp/
+	#Sending the backup to the s3 bucket and cleaning up the mess
+	s3cmd put /tmp/full_backup s3://crowdpark-berlin-deploy/backups/backup_couchbase_$DATE
+	rm /tmp/backup_tmp
+	rm /tmp/full_backup
+fi
+
+#Remove extra backups ( max 30 )
+
+NUMBER_OF_BACKUPS=`s3cmd ls s3://crowdpark-berlin-deploy/backups/backup_couchbase | awk '{ print $5 }' | wc -l`
+echo $NUMBER_OF_BACKUPS
+if [ "$NUMBER_OF_BACKUPS" -gt "30" ] ; then
+	PROMOTED_BACKUP=`s3cmd ls s3://crowdpark-berlin-deploy/backups/backup_couchbase | head -1 | awk '{ print $5 }'`
+	s3cmd del $PROMOTED_BACKUP
+fi

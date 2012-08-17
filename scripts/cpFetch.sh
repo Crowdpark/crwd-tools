@@ -220,7 +220,6 @@ function createVhost ()
             sudo ln -sf $vhostConfigFile /private/etc/apache2/sites/$VHOST.conf
     fi
 
-    
     sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist
     sudo launchctl load -w /System/Library/LaunchDaemons/org.apache.httpd.plist
     sleep 2

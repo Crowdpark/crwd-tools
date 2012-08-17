@@ -32,7 +32,16 @@ if [ -d ~/bin ]
 		mkdir ~/bin
 fi
 
-echo '
+for i in $(ls -1 scripts | grep -vi readme)
+do
+	ln -sf $(pwd)/scripts/$i ~/bin/$i
+done
+
+if $( grep crwd-tools ~/.profile )
+	then
+		true
+	else
+		echo '
 # ---- crwd-tools ----
 LANG="en_US.UTF-8"
 export LANG
@@ -45,3 +54,8 @@ PATH=~/bin:/usr/local/bin:/usr/local/sbin:$PATH
 export PATH
 # ----
 ' >> ~/.profile
+fi
+
+message 'crwd-tools setup done.'
+
+#EOF

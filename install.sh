@@ -25,6 +25,20 @@ fi
 
 brew install gnu-sed
 
+if [ -d scripts ]
+	then
+		true
+	else
+		cd ~/www/crwd-tools
+fi
+
+if [ -d scripts ]
+	then
+		true
+	else
+		error "Can't cd into crwd-tools. We assume you run a crowdpark setup which means ALL projects are located in ~/www/"
+fi
+
 if [ -d ~/bin ]
 	then
 		true
@@ -32,14 +46,16 @@ if [ -d ~/bin ]
 		mkdir ~/bin
 fi
 
+message 'symlinks into ~/bin will be created now.'
+
 for i in $(ls -1 scripts | grep -vi readme)
 do
-	ln -sf $(pwd)/scripts/$i ~/bin/$i
+	ln -s $(pwd)/scripts/$i ~/bin/$i
 done
 
-if $( grep crwd-tools ~/.profile )
+if grep crwd-tools ~/.profile > /dev/null 2>&1
 	then
-		true
+		message '~/.profile is already up to date. Please verify later manually.'
 	else
 		echo '
 # ---- crwd-tools ----
@@ -54,8 +70,11 @@ PATH=~/bin:/usr/local/bin:/usr/local/sbin:$PATH
 export PATH
 # ----
 ' >> ~/.profile
+		message 'Added crwd-tools section to ~/.profile'
 fi
 
+echo ''
 message 'crwd-tools setup done.'
+echo ''
 
 #EOF

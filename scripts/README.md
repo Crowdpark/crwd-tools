@@ -45,12 +45,16 @@ This will add 'local.projectname.crowdpark.com' to your hosts file (/private/etc
 
 --- automated environment setup: mysql, etc...
 
+--------
+
 updateApacheVhosts.sh
 =====================
 
 This script tries to update your local apache vhosts. It fetches all vhost config files from your projects and creates symlinks into the apache sites folder.
 
 Afterwards the local apache will be restarted, so please be prepared to enter your password (for sudo).
+
+--------
 
 **Warranty/Copyright (c) 2011 by [Crowdpark GmbH](http://www.crowdpark.com)**
 

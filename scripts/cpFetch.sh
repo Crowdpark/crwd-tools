@@ -217,7 +217,7 @@ function createVhost ()
             message 'sudo ln -sf YOUR_CONFIG /private/etc/apache2/sites/PROJECTNAME.config'
         else
             echo "$vhostConfig" > $vhostConfigFile
-            sudo ln -sf $vhostConfigFile /private/etc/apache2/sites/$VHOST.conf
+            sudo ln -sf $vhostConfigFile /private/etc/apache2/sites/ # $VHOST.conf
     fi
 
     sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist

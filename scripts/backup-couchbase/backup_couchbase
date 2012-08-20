@@ -2,29 +2,71 @@
 
 DATE=$(date +%Y%m%d%H%M)
 
-SERVER_IP=$1
+if [ -n $1 ]; then
+	cd $1	
+fi
 
 #Fecthing data
-/usr/bin/curl  "http://$(SERVER_IP):8092/default/_design/users/_view/backup?stale=update_after&connection_timeout=60000" > /tmp/backup_tmp
+/usr/bin/curl  "http://10.48.179.146:8092/default/_design/users/_view/backup?stale=update_after&connection_timeout=60000" > /tmp/backup_tmp
+
+TOTAL_LINES=`head -1  /tmp/backup_tmp | awk -F: '{print $2}' | awk -F, '{print $1}'`
+
+#create temp folder to store results
+mkdir /tmp/backup_couchbase
+
+ITERATIONS=`expr ${TOTAL_LINES} / 50000`
+COUNTER=0
+
+HEADER=`head -1 /tmp/backup_tmp`
+FOOTER="{\"id\":\"player:100002448134062\",\"key\":\"player:100002448134062\",\"value\":null}]}"
 
 
-LINES=`wc -l  /tmp/backup_tmp | awk '{print $1}'`
-#Some simple checking for content
-if [ "$LINES" -lt "5" ] ; then
-	echo "Too few lines, curl command probably got an unexpected answer"
-else
-	python ./backup_couch.py -f /tmp/backup_tmp -a $(SERVER_IP):11211 -o /tmp/
-	#Sending the backup to the s3 bucket and cleaning up the mess
-	s3cmd put /tmp/full_backup s3://crowdpark-berlin-deploy/backups/backup_couchbase_$DATE
-	rm /tmp/backup_tmp
-	rm /tmp/full_backup
-fi
 
+
+while [  "$COUNTER" -le "$ITERATIONS" ]; do
+
+	MULT=$(($COUNTER+1))
+	LIMIT=`expr 50000 \* $MULT`
+	SKIP=`expr 50000 \* ${COUNTER}`
+
+	if [ "$COUNTER" -eq "0" ]; then
+		head -${LIMIT} /tmp/backup_tmp > /tmp/backup_slice${COUNTER}
+		echo ${FOOTER} >> /tmp/backup_slice${COUNTER}
+	        python ./backup_memc.py -a 10.48.179.146:11211  -f /tmp/backup_slice${COUNTER} -o /tmp/backup_couchbase/backup_${COUNTER}	
+		
+	elif [ "$COUNTER" -eq "$ITERATIONS" ]; then
+		EXTRA_BITS=$(($TOTAL_LINES - 50000 * $COUNTER))
+		echo $EXTRA_BITS
+		echo ${HEADER} > /tmp/backup_slice${COUNTER}
+		head -${LIMIT} /tmp/backup_tmp | tail -${EXTRA_BITS} >> /tmp/backup_slice${COUNTER}
+	        python ./backup_memc.py -a 10.48.179.146:11211  -f /tmp/backup_slice${COUNTER} -o /tmp/backup_couchbase/backup_${COUNTER}	
+	else
+		echo ${HEADER} > /tmp/backup_slice${COUNTER}
+		head -${LIMIT} /tmp/backup_tmp | tail -50000 >> /tmp/backup_slice${COUNTER}
+		echo ${FOOTER} >> /tmp/backup_slice${COUNTER}
+	        python ./backup_memc.py -a 10.48.179.146:11211  -f /tmp/backup_slice${COUNTER} -o /tmp/backup_couchbase/backup_${COUNTER}	
+		
+	fi
+	COUNTER=$((COUNTER+1))
+done
+
+#Create tar 
+tar czf /tmp/backup_couchbase_$DATE.tar.gz /tmp/backup_couchbase
+#Sending the backup to the s3 bucket and cleaning up the mess
+s3cmd put /tmp/backup_couchbase_$DATE.tar.gz s3://crowdpark-berlin-deploy/backups/backup_couchbase_$DATE.tar.gz
+
+#Clean up
+rm /tmp/backup_couchbase_$DATE.tar.gz
+rm -rf /tmp/backup_couchbase
+rm  /tmp/backup_tmp
+rm  /tmp/backup_slice*
+
+	
 #Remove extra backups ( max 30 )
 
-NUMBER_OF_BACKUPS=`s3cmd ls s3://crowdpark-berlin-deploy/backups/backup_couchbase | awk '{ print $5 }' | wc -l`
-echo $NUMBER_OF_BACKUPS
-if [ "$NUMBER_OF_BACKUPS" -gt "30" ] ; then
-	PROMOTED_BACKUP=`s3cmd ls s3://crowdpark-berlin-deploy/backups/backup_couchbase | head -1 | awk '{ print $5 }'`
-	s3cmd del $PROMOTED_BACKUP
-fi
+#NUMBER_OF_BACKUPS=`s3cmd ls s3://crowdpark-berlin-deploy/backups/backup_couchbase | awk '{ print $5 }' | wc -l`
+#echo $NUMBER_OF_BACKUPS
+#if [ "$NUMBER_OF_BACKUPS" -gt "30" ] ; then
+#	PROMOTED_BACKUP=`s3cmd ls s3://crowdpark-berlin-deploy/backups/backup_couchbase | head -1 | awk '{ print $5 }'`
+#	s3cmd del $PROMOTED_BACKUP
+#fi

@@ -33,7 +33,6 @@ else:
 
 
 print('Connecting to couchbase...')
-#mc = memcache.Client(['ec2-54-247-28-110.eu-west-1.compute.amazonaws.com:11211'])
 mc = Couchbase(options.address+":8091","Administrator","Administrator")
 
 if options.bucket:

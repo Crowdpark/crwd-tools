@@ -21,8 +21,6 @@ HEADER=`head -1 /tmp/backup_tmp`
 FOOTER="{\"id\":\"player:100002448134062\",\"key\":\"player:100002448134062\",\"value\":null}]}"
 
 
-
-
 while [  "$COUNTER" -le "$ITERATIONS" ]; do
 
 	MULT=$(($COUNTER+1))

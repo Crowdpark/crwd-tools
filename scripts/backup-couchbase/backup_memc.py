@@ -23,6 +23,7 @@ if not options.output:
 	parser.error("Output path needs to be specified")
 
 
+
 print('Connecting to couchbase...')
 mc = memcache.Client([options.address])
 

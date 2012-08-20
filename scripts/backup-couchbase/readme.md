@@ -9,6 +9,12 @@ In order to these scripts to work, a view must be created in the couchbase serve
 Otherwise, please feel free to modify the code and replace the url.
 
 
+==========
+Install
+==========
+
+In order to use this scripts you will need to install the memcache and the couchbase library
+
 
 ==========
 Usage

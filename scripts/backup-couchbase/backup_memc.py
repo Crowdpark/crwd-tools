@@ -30,7 +30,7 @@ print('Parsing backup data...')
 json_data=open(options.filename)
 data = json.load(json_data)
 
-write_file = open("%s/full_backup" % options.output, "w")
+write_file = open(options.output, "w")
 
 print('Inserting data...')
 count=0
@@ -40,16 +40,19 @@ error_counter=0
 for tuples in data['rows']:
 	try:
 		value = mc.get(tuples['id'].encode('ascii','ignore'))
-        	tuples['values'] = unicode(value)
+        	tuples['value'] = unicode(value)
 		count += 1
 		if count == 10000:
 			print ' Done with %s lines ' % (count*second_count)
 			second_count += 1  
 			count = 0
 	except:
-	    	error_counter += 1
+		tuples['value'] = ''
+		error_counter += 1
 		pass
 
 print 'Number of errors: %s' % error_counter
-write_file.write(json.dumps(data, sort_keys=True, indent=4))
+#for chunk in json.JSONEncoder().iterencode(data):
+#	write_file.write(chunk)
+write_file.write(json.dumps(data, indent=4))
 write_file.close

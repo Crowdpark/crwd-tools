@@ -13,7 +13,12 @@ Otherwise, please feel free to modify the code and replace the url.
 Install
 ==========
 
-In order to use this scripts you will need to install the memcache and the couchbase library
+These scripts are based in python and bash. So both are a initial requirement.
+
+Couchbase library and memcache library are required to run those scripts ( Couchbase for the restore procedure and memcache for the backup)
+
+
+To install them, once you have  python and pip - just run "easy_install memcache (or) couchbase" 
 
 
 ==========

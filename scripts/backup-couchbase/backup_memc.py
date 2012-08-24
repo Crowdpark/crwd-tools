@@ -1,59 +1,78 @@
 #! /usr/bin/python
-import sys
-import memcache
+import sys,time
+from couchbase import Couchbase
 import json
 import unicodedata
 from optparse import OptionParser
 
-parser = OptionParser()
-parser.add_option("-f","--file",dest="filename",
-		 help="Backup file to restore", metavar="FILE")
-parser.add_option("-a","--address",dest="address",
-		 help="Address of the host where the couchbase server is running")
-parser.add_option("-o","--output",dest="output",
-		 help="Path to output the file")
+def main():
+	parser = OptionParser()
+	parser.add_option("-f","--file",dest="filename",
+			 help="Backup file to restore", metavar="FILE")
+	parser.add_option("-a","--address",dest="address",
+			 help="Address of the host where the couchbase server is running")
+	parser.add_option("-o","--output",dest="output",
+			 help="Path to output the file")
+	parser.add_option("-b","--bucket",dest="bucket",
+			 help="Path to output the file")
+	
+	(options,args) = parser.parse_args()
+	
+	if not options.filename:
+		parser.error("Filename must be specified!")
+	if not options.address:
+		parser.error("Host needs to be specified! e.g ip_address:port")
+	if not options.output:
+		parser.error("Output path needs to be specified")
+	if not options.bucket:
+		parser.error("Bucket needs to be specified")
 
-(options,args) = parser.parse_args()
+	bc=connect(options)
+	data=parse(options.filename)
+	process(bc,data,options.output)
+	
+	print 'Done'
 
-if not options.filename:
-	parser.error("Filename must be specified!")
-if not options.address:
-	parser.error("Host needs to be specified! e.g ip_address:port")
-if not options.output:
-	parser.error("Output path needs to be specified")
+def connect(options):
+	print('Connecting to couchbase...')
+	mc = Couchbase(options.address,"Administrator","Administrator")
 
+	print('Selecting bucket %s' % options.bucket)
+	bc = mc[options.bucket]
+	return bc
 
+def parse(filename):
+	print('Parsing backup data from... %s' % filename)
+	json_data=open(filename)
+	data = json.load(json_data)
+	return data
 
-print('Connecting to couchbase...')
-mc = memcache.Client([options.address])
+def process(bc,data,output):
 
-print('Parsing backup data...')
-json_data=open(options.filename)
-data = json.load(json_data)
+	print('Inserting data...')
+	error_counter=0
 
-write_file = open(options.output, "w")
+	iterations = data['total_rows'] / 10000 + 1
+	
+	for i in range(0,iterations):
 
-print('Inserting data...')
-count=0
-second_count=1
-yac=0
-error_counter=0
-for tuples in data['rows']:
-	try:
-		value = mc.get(tuples['id'].encode('ascii','ignore'))
-        	tuples['value'] = unicode(value)
-		count += 1
-		if count == 10000:
-			print ' Done with %s lines ' % (count*second_count)
-			second_count += 1  
-			count = 0
-	except:
-		tuples['value'] = ''
-		error_counter += 1
-		pass
+		write_file = open(output+str(i), "w")
+		chunk_data=data['rows'][i*10000:i*10000+10000]		
 
-print 'Number of errors: %s' % error_counter
-#for chunk in json.JSONEncoder().iterencode(data):
-#	write_file.write(chunk)
-write_file.write(json.dumps(data, indent=4))
-write_file.close
+		for tuples in chunk_data:
+			try:
+				value = bc.get(tuples['id'].encode('ascii','ignore'))
+				tuples['value'] = value[2].encode('ascii','ignore')
+			except:
+				tuples['value'] = ''
+				error_counter += 1
+				pass
+	
+		write_file.write(json.dumps(chunk_data, indent=4))
+		write_file.close
+		print("Done with %s lines" % (i*10000 + 10000))
+		print ("Sleeping 10 seconds")
+	print 'Number of errors: %s' % error_counter
+
+if __name__ == "__main__":
+    main()

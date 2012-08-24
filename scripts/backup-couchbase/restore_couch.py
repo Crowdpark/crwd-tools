@@ -33,7 +33,7 @@ else:
 
 
 print('Connecting to couchbase...')
-mc = Couchbase(options.address+":8091","Administrator","Administrator")
+mc = Couchbase(options.address,"Administrator","Administrator")
 
 if options.bucket:
 	bucket=mc[options.bucket]
@@ -44,7 +44,7 @@ else:
 f = open('/tmp/debug','w')
 
 for filename in list_filename:
-	print('Parsing backup data...')
+	print('Parsing backup data... from %s' % filename)
 	json_data=open(path+'/'+filename)
 
 	data = json.load(json_data)
@@ -76,4 +76,4 @@ for filename in list_filename:
 			second_count += 1  
 			count = 0
 f.close()
-	
+print "Done!"	

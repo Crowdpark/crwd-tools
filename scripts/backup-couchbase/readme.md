@@ -1,13 +1,5 @@
 This scripts aim to successfully backup and restore information within the couchbase service
 
-==========
-Requisits
-==========
-
-In order to these scripts to work, a view must be created in the couchbase server. This view should list all the wanted keys to be back up, and the name of the view is assumed to be 'backup'.
-
-Otherwise, please feel free to modify the code and replace the url.
-
 
 ==========
 Install
@@ -15,25 +7,25 @@ Install
 
 These scripts are based in python and bash. So both are a initial requirement.
 
-Couchbase library and memcache library are required to run those scripts ( Couchbase for the restore procedure and memcache for the backup)
-
-
-To install them, once you have  python and pip - just run "easy_install memcache (or) couchbase" 
+Couchbase library is also required to run those scripts. To install them, once you have  python and pip - just run "easy_install memcache (or) couchbase" 
 
 
 ==========
 Usage
 =========
 
--Backup
-Just use the shell script backup_couchbase, this will generate a backup file with all the information provided from the view described above.
+Both scripts have hardcoded credentials, please change them prior to execution
 
-By default, the information will be sent to the S3 bucket under the path: s3://crowdpark-berlin-deploy/backups/
+-Backup
+Just use the shell script backup_couchbase indicating the ip address (i.e ./backup_couchbase <ip_address> ) 
+
+By default, the information will be stored in /tmp
 
 -Restore
 
 To restore the backup, use the python script called restore_couch.py.
 
-You will need to provide the file with the data, the address of the couchbase service (without specifying the port). Credentials needs to be introduced in the script prior its execution.
+You will need to provide the file with the data (or the path where the files can be found), the address of the couchbase service (without specifying the port).
 
-The restore script, uses by default the python couchbase client. If the client is not available, python memcache client can be used as well, there is some code already written which is commented in the script; use those comments as a reference - be careful python memcache client does not allow bucket routing.
+
+

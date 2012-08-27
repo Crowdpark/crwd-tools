@@ -7,7 +7,7 @@ Install
 
 These scripts are based in python and bash. So both are a initial requirement.
 
-Couchbase library is also required to run those scripts. To install them, once you have  python and pip - just run "easy_install memcache (or) couchbase" 
+Couchbase library is also required to run those scripts. To install them, once you have  python and pip - just run "easy_install couchbase" 
 
 
 ==========
@@ -18,6 +18,7 @@ Both scripts have hardcoded credentials, please change them prior to execution
 
 -Backup
 Just use the shell script backup_couchbase indicating the ip address (i.e ./backup_couchbase <ip_address> ) 
+You can also indicate which bucket do you want to backup. By default ALL the buckets will be back up.
 
 By default, the information will be stored in /tmp
 

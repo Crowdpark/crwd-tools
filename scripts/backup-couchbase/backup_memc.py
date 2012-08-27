@@ -4,6 +4,11 @@ from couchbase import Couchbase
 import json
 import unicodedata
 from optparse import OptionParser
+#from unidecode import unidecode
+#from guppy import hpy
+#h = hpy()
+#print h.heap()
+
 
 def main():
 	parser = OptionParser()
@@ -72,6 +77,10 @@ def process(bc,data,output):
 		write_file.close
 		print("Done with %s lines" % (i*10000 + 10000))
 		print ("Sleeping 10 seconds")
+
+		#h = hpy()
+		#print h.heap()
+
 	print 'Number of errors: %s' % error_counter
 
 if __name__ == "__main__":

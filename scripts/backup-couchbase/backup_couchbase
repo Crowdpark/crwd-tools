@@ -1,26 +1,27 @@
 #!/bin/bash
 
 if [ -z $1 ]; then
-	echo "Ip address is required as a first argument"
+	echo "Ip address is required as a first argument / Second argument is optional (bucket)"
 	exit
 fi 
-
 
 DATE=$(date +%Y%m%d%H%M)
 COUNTER=0
 mkdir /tmp/backup_couchbase
-for i in `curl http://$1:8091/pools/default/buckets 2> /dev/null | python -mjson.tool | grep -v 'hostname' | grep 'name' | awk -F\" '{print \$4}'` ; do	
-	echo "Backing up $i"
-	#Check for view, otherwise install it
-	/usr/bin/curl "http://$1:8092/$i/_design/_all/_view/all?connection_timeout=60000" 2> /dev/null | grep -q 'not_found'
-	if [ $? -eq 0 ]; then
-		curl -X PUT -H 'Content-Type: application/json' http://Administrator:Administrator@$1:8092/$i/_design/_all -d @view	
-	fi 
-	#Fecthing data
-	/usr/bin/curl "http://$1:8092/$i/_design/_all/_view/all?connection_timeout=60000" 2> /dev/null > /tmp/backup_tmp 	
-	echo python /opt/backup-scripts/backup_memc.py -a $1:8091 -b $i -f /tmp/backup_tmp -o /tmp/backup_couchbase/backup_$i
-	python /opt/backup-scripts/backup_memc.py -a $1:8091 -b $i -f /tmp/backup_tmp -o /tmp/backup_couchbase/backup_$i
-done
+
+
+if [ -z $2 ]; then
+	for i in `curl http://$1:8091/pools/default/buckets 2> /dev/null | python -mjson.tool | grep -v 'hostname' | grep 'name' | awk -F\" '{print \$4}'` ; do	
+		echo "Backing up $i"
+		/usr/bin/curl 'http://localhost:8092/$i/_all_docs' > /tmp/backup_tmp 
+		python /opt/backup-scripts/backup_memc.py -a $1:8091 -b $i -f /tmp/backup_tmp -o /tmp/backup_couchbase/backup_$i
+	done
+else
+	echo "Backing up $2"
+        /usr/bin/curl 'http://localhost:8092/$2/_all_docs' > /tmp/backup_tmp
+        python /opt/backup-scripts/backup_memc.py -a $1:8091 -b $2 -f /tmp/backup_tmp -o /tmp/backup_couchbase/backup_$2
+fi
+
 
 #packaging data
 tar cfz /tmp/backup_$DATE.tar.gz /tmp/backup_couchbase/

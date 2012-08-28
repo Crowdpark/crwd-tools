@@ -6,27 +6,26 @@ Install
 ==========
 
 These scripts are based in python and bash. So both are a initial requirement.
-
-Couchbase library is also required to run those scripts. To install them, once you have  python and pip - just run "easy_install couchbase" 
-
+Couchbase library is also required to run those scripts. To install it just run "easy_install couchbase" 
 
 ==========
 Usage
 =========
 
-Both scripts have hardcoded credentials, please change them prior to execution
-
 -Backup
-Just use the shell script backup_couchbase indicating the ip address (i.e ./backup_couchbase <ip_address> ) 
-You can also indicate which bucket do you want to backup. By default ALL the buckets will be back up.
 
-By default, the information will be stored in /tmp
+run backup_couchbase <ip_addr> [<bucket>]
+
+Ip address is a mandatory field.
+Bucket is not, if no bucket is specified, the script will back up all the buckets in the system
+
+By default, the information will be stored under /tmp
 
 -Restore
 
 To restore the backup, use the python script called restore_couch.py.
 
-You will need to provide the file with the data (or the path where the files can be found), the address of the couchbase service (without specifying the port).
+You will need to provide the file with the data or the path where the files are located and the address of the couchbase service (without specifying the port).
 
 
 

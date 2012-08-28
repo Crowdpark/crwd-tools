@@ -1,6 +1,5 @@
 #! /usr/bin/python
 
-#import memcache
 from couchbase import Couchbase
 import json,os
 import unicodedata
@@ -9,12 +8,16 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-f","--file",dest="filename",
 		 help="Backup file to restore", metavar="FILE")
-parser.add_option("-p","--path",dest="path",
+parser.add_option("-d","--directory",dest="path",
 		 help="Path where backup files are")
 parser.add_option("-a","--address",dest="address",
 		 help="IP address of the service")
 parser.add_option("-b","--bucket",dest="bucket",
 		 help="Bucket to restore")
+parser.add_option("-u","--username",dest="username",default="Administrator",
+		 help="Username ")
+parser.add_option("-p","--password",dest="password",default="Administrator",
+		 help="Password")
 
 (options,args) = parser.parse_args()
 
@@ -33,7 +36,11 @@ else:
 
 
 print('Connecting to couchbase...')
-mc = Couchbase(options.address,"Administrator","Administrator")
+print options.address
+print options.username
+print options.password
+
+mc = Couchbase(options.address,options.username,options.password)
 
 if options.bucket:
 	bucket=mc[options.bucket]

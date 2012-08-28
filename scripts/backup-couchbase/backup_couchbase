@@ -13,12 +13,12 @@ mkdir /tmp/backup_couchbase
 if [ -z $2 ]; then
 	for i in `curl http://$1:8091/pools/default/buckets 2> /dev/null | python -mjson.tool | grep -v 'hostname' | grep 'name' | awk -F\" '{print \$4}'` ; do	
 		echo "Backing up $i"
-		/usr/bin/curl 'http://localhost:8092/$i/_all_docs' > /tmp/backup_tmp 
+		/usr/bin/curl 'http://$1:8092/$i/_all_docs' > /tmp/backup_tmp 
 		python /opt/backup-scripts/backup_memc.py -a $1:8091 -b $i -f /tmp/backup_tmp -o /tmp/backup_couchbase/backup_$i
 	done
 else
 	echo "Backing up $2"
-        /usr/bin/curl 'http://localhost:8092/$2/_all_docs' > /tmp/backup_tmp
+        /usr/bin/curl 'http://$1:8092/$2/_all_docs' > /tmp/backup_tmp
         python /opt/backup-scripts/backup_memc.py -a $1:8091 -b $2 -f /tmp/backup_tmp -o /tmp/backup_couchbase/backup_$2
 fi
 

@@ -1,80 +1,28 @@
-#!/bin/bash
+!#/bin/bash
 
-function error ()
-{
-	echo ''
-	echo $'\e[31m''---- EXIT BY ERROR: '
-	echo $'\e[31m'$1
-	echo ''
-	tput sgr0 
-	exit
-}
+read -p "This script will setup crwd-tools on your mac(!), continue? (N|y)" -n 1
 
-function message ()
-{
-	echo $'\e[32m'$1
-	tput sgr0
-}
-
-if [ -f /usr/local/bin/brew ]
-	then
-		true
-	else
-		error "Install brew first!"
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+	echo "crwd-tools setup aborted."
+    exit 1
 fi
 
-brew install gnu-sed
-
-if [ -d scripts ]
-	then
-		true
-	else
-		cd ~/www/crwd-tools
+if [ -d $HOME/www ]
+else
+	mkdir $HOME/www
 fi
 
-if [ -d scripts ]
-	then
-		true
-	else
-		error "Can't cd into crwd-tools. We assume you run a crowdpark setup which means ALL projects are located in ~/www/"
+if [ -d $HOME/www/crwd-tools ]
+then
+	echo "crwd-tools are already installed... chdir into $HOME/www/crwd-tools and run 'git pull origin master' to update."
+	exit 1
 fi
 
-if [ -d ~/bin ]
-	then
-		true
-	else
-		mkdir ~/bin
-fi
+cd $HOME/www
 
-message 'symlinks into ~/bin will be created now.'
+git clone --recursive https://github.com/Crowdpark/crwd-tools crwd-tools && cd crwd-tools && ./local-setup.sh
 
-for i in $(ls -1 scripts | grep -vi readme)
-do
-	ln -s $(pwd)/scripts/$i ~/bin/$i
-done
-
-if grep crwd-tools ~/.profile > /dev/null 2>&1
-	then
-		message '~/.profile is already up to date. Please verify later manually.'
-	else
-		echo '
-# ---- crwd-tools ----
-LANG="en_US.UTF-8"
-export LANG
-LC_ALL="en_US.UTF-8"
-export LC_ALL
-LC_CTYPE="UTF-8"
-export LC_CTYPE
-
-PATH=~/bin:/usr/local/bin:/usr/local/sbin:$PATH
-export PATH
-# ----
-' >> ~/.profile
-		message 'Added crwd-tools section to ~/.profile'
-fi
-
-echo ''
-message 'crwd-tools setup done.'
-echo ''
+echo "done."
 
 #EOF

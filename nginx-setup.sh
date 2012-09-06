@@ -2,10 +2,13 @@
 
 cd $HOME/www/crwd-tools || exit 1
 
-for pkg in php mcrypt apc memcached nginx beanstalk
+echo ''
+
+for pkg in php mcrypt memcached nginx beanstalk
 do
 	echo "brew install $pkg ..."
 	brew install $pkg
+	echo ''
 done
 
 if [ -d /usr/local/etc/nginx ]

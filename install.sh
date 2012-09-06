@@ -2,24 +2,22 @@
 
 echo ''
 echo '---- setup crwd-tools'
-echo 'This script will setup crwd-tools on your mac(!), continue? (N|y)'
+echo 'This script will setup crwd-tools on your mac(!), if you want to abort this press CTRL-C'
 
-read -p "$1" -n 1
-
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
-	echo "crwd-tools setup aborted."
-    exit 1
-fi
+sleep 5
 
 if [ -d $HOME/www ]
+then
+	true
 else
 	mkdir $HOME/www
 fi
 
 if [ -d $HOME/www/crwd-tools ]
 then
-	echo "crwd-tools are already installed... chdir into $HOME/www/crwd-tools and run 'git pull origin master' to update."
+	echo ''
+	echo "crwd-tools are already installed... chdir into $HOME/www/crwd-tools and run 'git pull origin master' for update."
+	echo ''
 	exit 1
 fi
 
@@ -27,6 +25,7 @@ cd $HOME/www
 
 git clone --recursive https://github.com/Crowdpark/crwd-tools crwd-tools && cd crwd-tools && ./local-setup.sh
 
+echo ''
 echo "done."
 
 #EOF

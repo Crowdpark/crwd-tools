@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 read -p "This script will setup crwd-tools on your mac(!), continue? (N|y)" -n 1
 

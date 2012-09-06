@@ -1,6 +1,10 @@
 #!/bin/bash
 
-read -p "This script will setup crwd-tools on your mac(!), continue? (N|y)" -n 1
+echo ''
+echo '---- setup crwd-tools'
+echo 'This script will setup crwd-tools on your mac(!), continue? (N|y)'
+
+read -p "$1" -n 1
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then

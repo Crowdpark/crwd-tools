@@ -11,15 +11,11 @@ If not already created, this will create the std. project folder www in your hom
 
 **Usage**
 
-There are several tools. Please read the individual README files.
+There are several tools. Please read the individual ReadMe files.
+Or here ->
+[GitHub Page](http://crowdpark.github.com/crwd-tools/)
 
-**TODO list**
-
---- offer this as a brew recipe.
-
---- automated environment setup: mysql, etc...
-
-**Warranty/Copyright (c) 2011 by [Crowdpark GmbH](http://www.crowdpark.com)**
+**Copyright (c) 2012 by [Crowdpark GmbH](http://www.crowdpark.com)**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

@@ -1,4 +1,30 @@
+#!/usr/bin/php -d memory_limit=536870912
 <?php
+include __DIR__ . "/../../library/Processus/bin/initProcessus.php";
+
+function run()
+{
+    $help = array(
+        "--remote"  => "remote couchbase uri -> 10.34.34.1:11211",
+        "--locale"  => "locale couchbase uri -> 127.0.0.1:11211",
+        "--verbose" => "",
+    );
+
+    $arguments = array_slice($_SERVER['argv'], 1);
+
+    if (count($arguments) <= 0) {
+        var_export($help);
+    }
+}
+
+function trace($message)
+{
+
+}
+
+run();
+die();
+
 echo "Sync Starting" . PHP_EOL;
 
 $targetHost     = "couchbase-server";
@@ -17,7 +43,7 @@ echo "Total Sync items: $totalItems" . PHP_EOL;
 try {
     $insertAdapter = new \Memcached("default");
     $insertAdapter->addServer($targetHost, $targetPort);
-    $result        = $insertAdapter->set("foo", array("name" => "bar_" . mt_rand(0, 1394898304))); // Testing if couchbase responding or not! Expiredtime is 1 sec.
+    $result = $insertAdapter->set("foo", array("name" => "bar_" . mt_rand(0, 1394898304))); // Testing if couchbase responding or not! Expiredtime is 1 sec.
 } catch (\Exception $error) {
     var_dump($error);
 }

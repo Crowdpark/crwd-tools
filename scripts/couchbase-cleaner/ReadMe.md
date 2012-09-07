@@ -1,4 +1,4 @@
-Couchbase Synchronizer
+Couchbase Clear
 ==============================
 
 # Install
@@ -6,3 +6,4 @@ Couchbase Synchronizer
 # Usage
 
 # Description
+

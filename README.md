@@ -5,14 +5,13 @@ Every Developer at Crowdpark just need a github account and the github project u
 
 **Install & Setup**
 
-	$ curl https://raw.github.com/Crowdpark/crwd-tools/master/install.sh | sh
+	curl https://raw.github.com/Crowdpark/crwd-tools/master/install.sh | sh
 
 If not already created, this will create the std. project folder www in your home directory and then clones the crwd-tools into your project folder. Afterwards the local setup will be done.
 
 **Usage**
 
 There are several tools. Please read the individual ReadMe files.
-Or here ->
 
 [GitHub Page](http://crowdpark.github.com/crwd-tools/)
 

@@ -31,6 +31,14 @@ if [ -d scripts ]
 		error "Can't cd into crwd-tools. We assume you run a crowdpark setup which means ALL projects are located in $HOME/www/"
 fi
 
+echo ''
+message 'just make sure this repo is updated...'
+git pull origin master
+git submodule init
+git submodule update
+message 'crwd-tools are fine...'
+echo ''
+
 if [ -d $HOME/bin ]
 	then
 		true
@@ -40,7 +48,7 @@ fi
 
 message 'symlinks into $HOME/bin will be created now.'
 
-for i in $(ls -1 scripts | grep -vi readme)
+for i in $(ls -1 scripts | grep -i \.sh)
 do
 	ln -s $(pwd)/scripts/$i $HOME/bin/$i
 done
@@ -66,7 +74,15 @@ export PATH
 fi
 
 echo ''
-message 'crwd-tools setup done.'
+message 'crwd-tools setup/update done.'
 echo ''
+
+promptContinue 'continue with individual setup scripts like nginx and others? (N|y)'
+
+echo ''
+message 'nginx setup...'
+./nginx-setup.sh
+
+
 
 #EOF

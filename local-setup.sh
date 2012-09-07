@@ -1,20 +1,6 @@
 #!/bin/bash
 
-function error ()
-{
-	echo ''
-	echo $'\e[31m''---- EXIT BY ERROR: '
-	echo $'\e[31m'$1
-	echo ''
-	tput sgr0 
-	exit
-}
-
-function message ()
-{
-	echo $'\e[32m'$1
-	tput sgr0
-}
+source functions.sh
 
 if [ -f /usr/local/bin/brew ]
 	then
@@ -23,7 +9,13 @@ if [ -f /usr/local/bin/brew ]
 		error "Install brew first!"
 fi
 
-brew install gnu-sed
+for pkg in gnu-sed \
+           beanstalkd \
+           redis \
+           mysql
+do
+	brew install $pkg && message "installed $pkg via brew."
+done
 
 if [ -d scripts ]
 	then

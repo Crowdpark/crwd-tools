@@ -90,6 +90,4 @@ echo ''
 message 'nginx setup...'
 ./nginx-setup.sh
 
-
-
 #EOF

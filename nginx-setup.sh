@@ -34,9 +34,10 @@ else
 	cp /usr/local/etc/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf.dist
 fi
 
-cp conf/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf
 gsed -i "s/REPLACE_ME/$USER/" conf/nginx/nginx.conf
+cp conf/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf
 
+mkdir -p /usr/local/var/run
 mkdir -p /usr/local/var/log
 
 message "nginx general error logs will be stored here: /usr/local/var/log/nginx.error.log"

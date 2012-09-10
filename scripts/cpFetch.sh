@@ -143,6 +143,9 @@ function create ()
 
 function createVhost ()
 {
+    message "VHOST   = $VHOST"
+    message "PROJECT = $PROJECT"
+    echo ''
     read -p "Apache or Nginx VHost? (A|N) " -n 1
     echo ''
 
@@ -223,8 +226,11 @@ function createVhostNginx ()
             message 'Example:'
             message 'sudo ln -sf YOUR_CONFIG /private/etc/apache2/sites/PROJECTNAME.config'
         else
-            cp $HOME/www/crwd-tools/conf/nginx/vhost.template "$PDIR/$PROJECT/application/nginx.config/$VHOST.osx.conf"
-            ln -s "$PDIR/$PROJECT/application/nginx.config/$VHOST.osx.conf" $vhostConfigFile
+            cp $HOME/www/crwd-tools/conf/nginx/vhost.template $vhostConfigFile
+            gsed -i "s/REPLACE_VHOST/$VHOST/g" $vhostConfigFile
+            gsed -i "s/REPLACE_USER/$USER/g" $vhostConfigFile
+            gsed -i "s/REPLACE_PROJECT/$PROJECT/g" $vhostConfigFile
+            ln -s $vhostConfigFile "/usr/local/etc/nginx/sites-enabled/$VHOST"
     fi
 
     [ "$(psgrep -a nginx | grep root)" ] && nginx.sh stop

@@ -143,6 +143,26 @@ function create ()
 
 function createVhost ()
 {
+    read -p "Apache or Nginx VHost? (A|N) " -n 1
+    echo ''
+    
+    case $REPLY in
+        A)
+            message createVhostApache
+            echo createVhostApache
+            ;;
+        N)
+            message createVhostNginx
+            echo createVhostNginx
+            ;;
+        *)
+            message 'A or N'
+            ;;
+    esac
+}
+
+function createVhostApache ()
+{
     if [ -f /usr/local/bin/brew ]
         then
             if [ -f /usr/local/bin/gsed ]

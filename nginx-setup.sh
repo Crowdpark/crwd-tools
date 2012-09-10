@@ -6,7 +6,11 @@ cd $HOME/www/crwd-tools || exit 1
 
 echo ''
 
-for pkg in git php mcrypt memcached nginx psgrep
+brew tap josegonzalez/homebrew-php
+brew tap homebrew/dupes
+brew install --without-apache --with-suhosin --with-fpm --with-mysql php53
+
+for pkg in git mcrypt memcached nginx psgrep
 do
 	message "brew install $pkg ..."
 	brew install $pkg

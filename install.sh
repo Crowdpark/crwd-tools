@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source functions.sh
-
 message ''
 message '---- setup crwd-tools'
 message 'This script will setup crwd-tools on your mac(!), if you want to abort this press CTRL-C ... the script continues in 5 sec.'
@@ -25,7 +23,7 @@ cd $HOME/www
 
 git clone --recursive https://github.com/Crowdpark/crwd-tools crwd-tools && cd crwd-tools && ./local-setup.sh
 
-message ''
-message "done."
+echo ''
+echo "done."
 
 #EOF

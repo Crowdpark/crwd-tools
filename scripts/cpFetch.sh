@@ -145,20 +145,103 @@ function createVhost ()
 {
     read -p "Apache or Nginx VHost? (A|N) " -n 1
     echo ''
-    
+
     case $REPLY in
         A)
             message createVhostApache
-            echo createVhostApache
+            createVhostApache
             ;;
         N)
             message createVhostNginx
-            echo createVhostNginx
+            createVhostNginx
             ;;
         *)
             message 'A or N'
             ;;
     esac
+}
+
+function createVhostNginx ()
+{
+    if [ -f /usr/local/bin/brew ]
+        then
+            if [ -f /usr/local/bin/gsed ]
+                then true
+                else 
+                    brew update
+                    brew install gnu-sed
+            fi
+        else error 'EPIC FAIL: no brew installed!'
+    fi
+
+    if [ -n "$VHOST" ]
+        then true
+        else error 'no vhost given! cpFetch PROJECT VHOST'
+    fi
+
+    message "create vhost called for project: '$PROJECT'"
+
+    if [ -d "$PDIR/$PROJECT" ]
+        then true
+        else error 'are you kidding me? The project does NOT exist!'
+    fi
+
+    if [ -d "$PDIR/$PROJECT/htdocs" ]
+        then true
+        else mkdir -p "$PDIR/$PROJECT/htdocs" || error 'mkdir failed! check ~/www and the project folders for proper rw permissions'
+    fi
+
+    if [ -d "$PDIR/$PROJECT/application/nginx.config" ]
+        then true
+        else mkdir -p "$PDIR/$PROJECT/application/nginx.config" || error 'mkdir failed! check ~/www and the project folders for proper rw permissions'
+    fi
+
+    vhostConfigFile="$PDIR/$PROJECT/application/nginx.config/$VHOST.osx.conf"
+
+    message ""
+    message "Now we need your Admin/Root password for this computer."
+    message ""
+    sudo true
+    
+    if [ $(grep -c $VHOST /private/etc/hosts) == 0 ]
+        then
+        sudo chmod 666 /private/etc/hosts
+        sudo cp /private/etc/hosts /private/etc/hosts.bak
+        sudo echo '' >> /private/etc/hosts
+        sudo echo '# additions made by Crowdpark/cpFetch' >> /private/etc/hosts
+        sudo echo '' >> /private/etc/hosts
+        sudo echo "127.0.0.1 $VHOST" >> /private/etc/hosts
+        sudo echo "::1 $VHOST" >> /private/etc/hosts
+        sudo chmod 644 /private/etc/hosts
+        else message '/etc/hosts enrty is already there.'
+    fi
+
+    if [ -f $vhostConfigFile ]
+        then
+            message "vhostConfigFile $vhostConfigFile already exists!"
+            message 'Please copy and change it to your local settings and link it into /private/etc/apache2/sites'
+            message 'Example:'
+            message 'sudo ln -sf YOUR_CONFIG /private/etc/apache2/sites/PROJECTNAME.config'
+        else
+            cp $HOME/www/crwd-tools/conf/nginx/vhost.template "$PDIR/$PROJECT/application/nginx.config/$VHOST.osx.conf"
+            ln -s "$PDIR/$PROJECT/application/nginx.config/$VHOST.osx.conf" $vhostConfigFile
+    fi
+
+    [ "$(psgrep -a nginx | grep root)" ] && nginx.sh stop
+    nginx.sh start
+
+    sleep 2
+
+    message ''
+    message '----------------------------------------------------------------------------------'
+    message ''
+    message "VHOST http://$VHOST is now setup and you can use your webbrowser"
+    open -F -a 'Google Chrome' "http://$VHOST"
+
+    message "depending on your current project, it might be necessary to launch Couchbase, MySQL or other services too."
+    message ''
+    message '----------------------------------------------------------------------------------'
+    message "DONE."
 }
 
 function createVhostApache ()

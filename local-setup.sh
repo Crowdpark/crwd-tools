@@ -6,7 +6,14 @@ if [ -f /usr/local/bin/brew ]
 	then
 		true
 	else
-		error "Install brew first!"
+		message "setup install brew"
+		if [ -f "$(which gcc)" ]
+			then
+				ruby <(curl -fsSkL raw.github.com/mxcl/homebrew/go)
+			else
+				error "Without 'Developer Comand Line Tools' no fun!"
+		fi
+		
 fi
 
 for pkg in gnu-sed \

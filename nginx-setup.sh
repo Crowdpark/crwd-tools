@@ -6,7 +6,7 @@ cd $HOME/www/crwd-tools || exit 1
 
 echo ''
 
-for pkg in php mcrypt memcached nginx psgrep
+for pkg in git php mcrypt memcached nginx psgrep
 do
 	message "brew install $pkg ..."
 	brew install $pkg
@@ -17,8 +17,7 @@ if [ -d /usr/local/etc/nginx ]
 then
 	true
 else
-	message 'something went terribly wrong!'
-	exit 1
+	error 'something went terribly wrong! Could not find nginx...'
 fi
 
 if [ -d /usr/local/etc/nginx/sites-enabled ]

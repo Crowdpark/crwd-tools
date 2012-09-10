@@ -17,10 +17,8 @@ fi
 
 if [ -d $HOME/www/crwd-tools ]
 then
-	message ''
-	message "crwd-tools are already installed... chdir into $HOME/www/crwd-tools and run 'git pull origin master' for update."
-	message ''
-	exit 1
+	echo ''
+	error "crwd-tools are already installed... chdir into $HOME/www/crwd-tools and run 'git pull origin master' for update."
 fi
 
 cd $HOME/www

@@ -41,14 +41,7 @@ fi
 gsed -i "s/REPLACE_ME/$USER/" conf/nginx/nginx.conf
 cp conf/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf
 
-if [ -f /usr/local/etc/php-fpm.conf.dist ]
-then
-	true
-else
-	cp /usr/local/etc/php-fpm.conf /usr/local/etc/php-fpm.conf.dist
-fi
-
-cp conf/nginx/php-fpm.conf /usr/local/etc/nginx/php-fpm.conf
+find /usr/local/etc -name php\*fpm.conf -exec gsed -i 's/daemonize.*/daemonize = yes ; defaul is no/' {} \;
 
 mkdir -p /usr/local/var/run
 mkdir -p /usr/local/var/log

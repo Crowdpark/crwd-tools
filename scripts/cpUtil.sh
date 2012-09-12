@@ -222,9 +222,10 @@ function createVhostNginx ()
     if [ -f $vhostConfigFile ]
         then
             message "vhostConfigFile $vhostConfigFile already exists!"
-            message 'Please copy and change it to your local settings and link it into /private/etc/apache2/sites'
+            message 'Please copy and change it to your local settings and link it into /usr/local/etc/nginx/sites-enabled'
             message 'Example:'
-            message 'sudo ln -sf YOUR_CONFIG /private/etc/apache2/sites/PROJECTNAME.config'
+            message 'ln -sf YOUR_CONFIG /usr/local/etc/nginx/sites-enabled/vhost-or-project-name'
+            echo ''
         else
             cp $HOME/www/crwd-tools/conf/nginx/vhost.template $vhostConfigFile
             gsed -i "s/REPLACE_VHOST/$VHOST/g" $vhostConfigFile

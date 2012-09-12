@@ -20,7 +20,11 @@ def main():
 			 help="Path to output the file")
 	parser.add_option("-b","--bucket",dest="bucket",
 			 help="Path to output the file")
-	
+	parser.add_option("-u","--username",dest="username",
+			 help="couchbase username")
+	parser.add_option("-p","--password",dest="password",
+			 help="couchbase password")
+
 	(options,args) = parser.parse_args()
 	
 	if not options.filename:
@@ -31,6 +35,10 @@ def main():
 		parser.error("Output path needs to be specified")
 	if not options.bucket:
 		parser.error("Bucket needs to be specified")
+	if not options.username:
+		parser.error("Couchbase username needs to be specified")
+	if not options.password:
+		parser.error("Couchbase password needs to be specified")
 
 	bc=connect(options)
 	data=parse(options.filename)
@@ -40,7 +48,7 @@ def main():
 
 def connect(options):
 	print('Connecting to couchbase...')
-	mc = Couchbase(options.address,"Administrator","Administrator")
+	mc = Couchbase(options.address,options.username,options.password)
 
 	print('Selecting bucket %s' % options.bucket)
 	bc = mc[options.bucket]

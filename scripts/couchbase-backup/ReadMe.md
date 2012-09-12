@@ -6,7 +6,7 @@ Install
 ==========
 
 These scripts are based in python and bash. So both are a initial requirement.
-Couchbase library is also required to run those scripts. To install it just run "easy_install couchbase" 
+Couchbase library is also required to run those scripts. To install it just run "sudo easy_install couchbase" 
 
 ==========
 Usage

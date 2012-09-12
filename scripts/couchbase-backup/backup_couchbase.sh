@@ -3,6 +3,9 @@
 MY_PATH="`dirname \"$0\"`"              # relative
 MY_PATH="`( cd \"$MY_PATH\" && pwd )`"  # absolutized and normalized
 
+echo "MY_PATH = $MY_PATH"
+echo ''
+
 if [ -z $1 ]; then
 	echo "Ip address is required as a first argument / Second argument is optional (bucket)"
 	exit
@@ -11,11 +14,11 @@ fi
 if [ -z $3 ]; then
 	USERNAME="Administrator"
 else
-	PASSWORD="Administrator"
+	USERNAME=$3
 fi
 
 if [ -z $4 ]; then
-	USERNAME=$3
+	PASSWORD="Administrator"
 else
 	PASSWORD=$4
 fi
@@ -34,8 +37,8 @@ if [ -z $2 ]; then
 		python $MY_PATH/backup_memc.py -a $1:8091 -b $i -f /tmp/backup_tmp -o /tmp/backup_couchbase/backup_$i -u ${USERNAME} -p ${PASSWORD} 
 	done
 else
-	echo "Backing up $2"
-        /usr/bin/curl 'http://$1:8092/$2/_all_docs' > /tmp/backup_tmp
+	echo "Backing up $2 @ $1"
+        /usr/bin/curl "http://$1:8092/$2/_all_docs" > /tmp/backup_tmp
         python $MY_PATH/backup_memc.py -a $1:8091 -b $2 -f /tmp/backup_tmp -o /tmp/backup_couchbase/backup_$2  -u ${USERNAME} -p ${PASSWORD}
 fi
 

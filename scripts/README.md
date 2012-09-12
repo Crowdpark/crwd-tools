@@ -1,19 +1,19 @@
-cpFetch.sh
-==========
+cpUtil.sh (before known as cpUtil.sh)
+======================================
 
-cpFetch tries to read the project configuration to configure the local apache and other services to make it possible for non shell junkies to work on projects easier.
+cpUtil.sh tries to read the project configuration to configure the local apache and other services to make it possible for non shell junkies to work on projects easier.
 
 **Usage**
 
 ***Checkout***
 
-	$ cpFetch.sh checkout git@github.com:Crowdpark/processus.git
+	$ cpUtil.sh checkout git@github.com:Crowdpark/processus.git
 
 This will clone processus from github into "~/www/processus".
 
 ***Clean***
 
-    $ cpFetch.sh clean
+    $ cpUtil.sh clean
 
 Removes the temp folder from "~/www". This should be invoked after each successful checkout.
 
@@ -25,25 +25,23 @@ There are two use cases:
 
 ****create and add the project**** automatically to a given github repo.
 
-    $ cpFetch.sh create PROJECT GITHUB-URL
+    $ cpUtil.sh create PROJECT GITHUB-URL
 
 or just create without adding the remote repo:
 
-    $ cpFetch.sh create PROJECT
+    $ cpUtil.sh create PROJECT
 
 Always try to follow the onscreen instructions.
 
-***Create VHost (local Apache)***
+***Create VHost (local Apache or local Nginx)***
 
-    $ cpFetch.sh createVhost PROJECT local.projectname.crowdpark.com
+    $ cpUtil.sh createVhost PROJECT local.projectname.crowdpark.com
     
+After calling cpUtil with these parameters you will be asked if the new vhost will be added for apache or nginx.
+
 This will add 'local.projectname.crowdpark.com' to your hosts file (/private/etc/hosts) and create (if necessary) an apache config file which will be linked to /private/etc/apache2/sites. Apache will be restartet and the new site will be opened inside your Google Chrome browser.
 
 **TODO list**
-
---- offer this as a brew recipe.
-
---- automated environment setup: mysql, etc...
 
 --------
 

@@ -327,13 +327,22 @@ function createVhostApache ()
             message 'sudo ln -sf YOUR_CONFIG /private/etc/apache2/sites/PROJECTNAME.config'
         else
             echo "$vhostConfig" > $vhostConfigFile
-            if [ -d /private/etc/apache2/sites ]
+
+            if [ -f /private/etc/apache2/httpd.conf.dist ]
             then
                 true
             else
+                sudo cp /private/etc/apache2/httpd.conf /private/etc/apache2/httpd.conf.dist
+                gsed -i 's/^#LoadModule php5_module/LoadModule php5_module/' /private/etc/apache2/httpd.conf
                 sudo mkdir /private/etc/apache2/sites
                 sudo echo '' >> /private/etc/apache2/httpd.conf
-                sudo echo 'Include /private/etc/apache2/sites/*.conf' >> /private/etc/apache2/httpd.conf
+                if [ $(grep -c 'apache2/sites' /private/etc/apache2/httpd.conf) == 0 ]
+                then
+                    sudo echo 'Include /private/etc/apache2/sites/*.conf' >> /private/etc/apache2/httpd.conf
+                else
+                    true
+                fi
+                
             fi
 
             sudo ln -sf $vhostConfigFile /private/etc/apache2/sites/ # $VHOST.conf

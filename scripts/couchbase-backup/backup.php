@@ -1,5 +1,4 @@
 <?php
-include __DIR__ . "/../../library/Processus/bin/initProcessus.php";
 
 function run()
 {
@@ -46,4 +45,5 @@ function run()
 }
 
 run();
-die();
+
+//EOF

@@ -54,4 +54,5 @@ function findJsonFiles($directory = '')
 }
 
 run();
-die();
+
+//EOF

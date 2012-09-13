@@ -327,12 +327,22 @@ function createVhostApache ()
             message 'sudo ln -sf YOUR_CONFIG /private/etc/apache2/sites/PROJECTNAME.config'
         else
             echo "$vhostConfig" > $vhostConfigFile
+            if [ -d /private/etc/apache2/sites ]
+            then
+                true
+            else
+                sudo mkdir /private/etc/apache2/sites
+                sudo echo '' >> /private/etc/apache2/httpd.conf
+                sudo echo 'Include /private/etc/apache2/sites/*.conf' >> /private/etc/apache2/httpd.conf
+            fi
+
             sudo ln -sf $vhostConfigFile /private/etc/apache2/sites/ # $VHOST.conf
     fi
 
     sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist
+    sleep 1
     sudo launchctl load -w /System/Library/LaunchDaemons/org.apache.httpd.plist
-    sleep 2
+    sleep 1
 
     message ''
     message '----------------------------------------------------------------------------------'

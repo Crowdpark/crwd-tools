@@ -3,6 +3,10 @@ crwd-tools (formerly known as bash-pm)
 
 Every Developer at Crowdpark just need a github account and the github project url to fetch the project. Also cpFetch tries to read the project configuration to configure the local apache and other services to make it possible for non shell junkies to work on projects easier.
 
+** Requirements **
+
+__Mac OSX Commandline Tools__
+
 **Install & Setup**
 
 	curl https://raw.github.com/Crowdpark/crwd-tools/master/install.sh | sh

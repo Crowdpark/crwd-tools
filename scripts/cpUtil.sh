@@ -306,6 +306,8 @@ function createVhostApache ()
 
     vhostConfigFile="$PDIR/$PROJECT/application/apache.config/$VHOST.osx.conf"
     vhostConfig="
+NameVirtualHost *:80
+
 <VirtualHost *:80>
     ServerName      $VHOST
     DocumentRoot    $PDIR/$PROJECT/htdocs

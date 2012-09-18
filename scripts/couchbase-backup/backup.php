@@ -17,7 +17,6 @@ function run()
         2 => array("file", "/dev/null", "a"),
     );
 
-
     if ($host == false || $bucket == false || $dest == false) {
         die('-h HOST -b BUCKETNAME -d DESTINATION DIR [-s S3 BACKUP]');
     }
@@ -27,7 +26,9 @@ function run()
     $baseUrl     = 'http://' . $host . ':8092/' . $bucket . '/_all_docs?skip=0&limit=1';
     $fetchUrl    = 'http://' . $host . ':8092/' . $bucket . '/_all_docs?skip=%d&limit=%d&include_docs=true';
     $destDir     = $cwd . '/' . $dest;
-    $destArchive = $destDir . '.tar.gz';
+    $destArchive = $dest . '.tar.gz';
+
+    chdir($cwd);
 
     printf("baseUrl = '%s'\n", $baseUrl);
 
@@ -57,7 +58,7 @@ function run()
     echo("backup done... now creating an archive of the files...\n");
 
     $tarProc = proc_open(
-        'tar czvvf ' . $destArchive . ' ' . $destDir,
+        'tar czvvf ' . $destArchive . ' ' . $dest,
         $descriptorspec, $pipes, $cwd, null
     );
 
@@ -89,6 +90,7 @@ function run()
             die('s3cmd transfer failed!');
         }
 
+        unlink($destArchive);
         echo("listing of all files in S3 backup bucket:\n");
         system('s3cmd ls ' . $s3BackupBucket);
         echo("\n\ndone.\n");

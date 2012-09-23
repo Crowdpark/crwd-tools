@@ -6,7 +6,7 @@ Every Developer at Crowdpark just need a github account and the github project u
 **Requirements**
 ----
 
-__Mac OSX Commandline Tools__
+[Mac OSX Commandline Tools](developer.apple.com)
 
 **Install & Setup**
 ----
@@ -19,8 +19,6 @@ If not already created, this will create the std. project folder www in your hom
 ----
 
 There are several tools. Please read the individual ReadMe files.
-
-[GitHub Page](http://crowdpark.github.com/crwd-tools/)
 
 **Some Info**
 ----

@@ -7,7 +7,7 @@ function run()
     $help = array(
         "--remote"  => "remote couchbase uri -> 10.34.34.1:11211",
         "--locale"  => "locale couchbase uri -> 127.0.0.1:11211",
-        "--verbose" => "",
+        "--verbose" => "log everything",
     );
 
     $arguments = array_slice($_SERVER['argv'], 1);

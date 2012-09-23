@@ -19,6 +19,23 @@ There are several tools. Please read the individual ReadMe files.
 
 [GitHub Page](http://crowdpark.github.com/crwd-tools/)
 
+----
+If you don't know about your system I'll try to give you some entry points:
+
+1.) Brew
+
+Brew is a package managar which provides the most easy and elegant way (at the moment) to install *NIX packages on OSX.
+
+2.) Nginx & php-fpm
+
+Nginx and php-fpm (php in general) configs can be found in /usr/local/etc, if you use the brew versions (which I would strongly recommend).
+
+3.) Crowdpark Projects
+
+Crowdpark projects has to be placed in ~/www/projectname, ~ is the common shortcut for the path to your homedir, you can also use $HOME. Try out 'ls -la $HOME', 'ls -la ~' or 'cd ~; pwd'
+
+----
+
 **Copyright (c) 2012 by [Crowdpark GmbH](http://www.crowdpark.com)**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:

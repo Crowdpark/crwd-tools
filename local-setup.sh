@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd $HOME/www/crwd-tools
+
 source functions.sh
 
 if [ -f /usr/local/bin/brew ]

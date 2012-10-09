@@ -400,8 +400,12 @@ case $1 in
 		message "remove $TDIR and all of its contents..."
 		rm -rf $TDIR
 		;;
+    update)
+        message "update crwd-tools"
+        git pull origin master
+        ;;
 	*)
-		echo 'Usage: cpFecth [clean|checkout URL|create PROJECTNAME [URL]|createVhost PROJECTNAME VHOST]'
+		echo 'Usage: cpUtil.sh [clean|checkout URL|create PROJECTNAME [URL]|createVhost PROJECTNAME VHOST|update]'
 		;;
 esac
 

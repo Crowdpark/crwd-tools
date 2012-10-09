@@ -4,63 +4,75 @@ function run()
 {
     $options = getopt('h:b:d:s:f');
 
-    $host           = isset($options['h']) ? $options['h'] : false;
-    $bucket         = isset($options['b']) ? $options['b'] : false;
-    $dest           = isset($options['d']) ? $options['d'] : $bucket . '_' . time();
-    $s3Backup       = isset($options['s']) ? true : false;
+    $host           = isset($options['h']) ? $options['h'] : FALSE;
+    $bucket         = isset($options['b']) ? $options['b'] : FALSE;
+    $dest           = isset($options['d']) ? $options['d'] : $bucket . '_' . date('Ymd-s', time());
+    $s3Backup       = isset($options['s']) ? TRUE : FALSE;
+
     $s3BackupBucket = 's3://crowdpark-berlin-deploy/backups/';
     $pipes          = array();
-    $cwd            = '/tmp';
     $descriptorspec = array(
         0 => array("pipe", "r"),
         1 => array("pipe", "w"),
         2 => array("file", "/dev/null", "a"),
     );
 
-    if ($host == false || $bucket == false || $dest == false) {
-        die('-h HOST -b BUCKETNAME -d DESTINATION DIR [-s S3 BACKUP]');
+    if ($host == FALSE || $bucket == FALSE || $dest == FALSE) {
+        die('-h HOST -b BUCKETNAME -d DESTINATION DIR [-s S3 BACKUP]' . PHP_EOL);
     }
 
     $skip        = 0;
     $limit       = 1000;
-    $baseUrl     = 'http://' . $host . ':8092/' . $bucket . '/_all_docs?skip=0&limit=0';
-    $fetchUrl    = 'http://' . $host . ':8092/' . $bucket . '/_all_docs?skip=%d&limit=%d&include_docs=true';
-    $destDir     = $cwd . '/' . $dest;
-    $destArchive = $dest . '.tar.gz';
+    $baseUrl     = 'http://' . $host . ':8092/' . $bucket . '/_design/backup/_view/all?skip=0&limit=1';
+    $fetchUrl    = 'http://' . $host . ':8092/' . $bucket . '/_design/backup/_view/all?skip=%d&limit=%d&include_docs=true';
+    $destDir     = $dest;
 
-    chdir($cwd);
+    printf("baseUrl = '%s'\n", $baseUrl);
 
-    printf("baseUrl = '%s'" . PHP_EOL, $baseUrl);
-
-    $bucketStatus = json_decode(file_get_contents($baseUrl), true);
+    /** fetching totalRows stats from the couchbase */
+    $bucketStatus = json_decode(file_get_contents($baseUrl), TRUE);
 
     $rows = $bucketStatus['total_rows'];
     $runs = ceil($rows / $limit) + 1;
 
-    printf("%s contains %d elements = %d single backup files in '%s'" . PHP_EOL, $bucket, $rows, $runs, $destDir);
-    printf("Mkdir = " . $destDir . PHP_EOL);
-    
-    mkdir($destDir);
+    echo "Destination: " . $destDir . PHP_EOL;
+
+    /** creating recursive folders if needed */
+    if (is_dir($destDir) == FALSE) {
+        mkdir($destDir, 0777, TRUE);
+    }
+
+    $filename = 'backup_' . time() . '.json';
+    $rawFile = $destDir . $filename;
+    $destArchive = $dest . $filename . '.tar.gz';
+
+    echo "Complete Path: " . $rawFile . PHP_EOL;
+    echo "Archive Path: " . $destArchive . PHP_EOL;
 
     for ($i = 0; $i < $runs; $i++) {
-        $filename = $destDir . '/' . $i . '.json';
+        //$filename = $destDir . '/' . $i . '.json';
 
-        if (is_file($filename)) {
-            die("FATAL: '$filename' already in use!'");
-        }
+//        if (is_file($filename)) {
+//            die("FATAL: '$filename' already in use!'");
+//        }
 
-        $fh  = fopen($filename, 'w');
+        //$fh  = fopen($filename, 'w');
         $url = sprintf($fetchUrl, $i * $limit, $limit);
         printf("url = '%s'\n", $url);
-        fwrite($fh, file_get_contents($url));
-        fclose($fh);
+
+        if (is_file($rawFile)) {
+            file_put_contents($rawFile, file_get_contents($url), FILE_APPEND);
+        } else {
+            file_put_contents($rawFile, file_get_contents($url));
+        }
+
     }
 
     echo("backup done... now creating an archive of the files...\n");
 
     $tarProc = proc_open(
-        'tar czvvf ' . $destArchive . ' ' . $dest,
-        $descriptorspec, $pipes, $cwd, null
+        'tar czvvf ' . $destArchive . ' ' . $rawFile,
+        $descriptorspec, $pipes, $filename, NULL
     );
 
     if (is_resource($tarProc)) {
@@ -71,16 +83,14 @@ function run()
         die('tar archiving failed!');
     }
 
-    shell_exec('rm -rf ' . $destDir);
-
     printf("the complete backup (archive) can be found here: %s\n", $destArchive);
 
-    if ($s3Backup === true) {
+    if ($s3Backup === TRUE) {
         echo ("backup will be stored to S3 bucket.");
 
         $s3Proc = proc_open(
             's3cmd put ' . $destArchive . ' ' . $s3BackupBucket,
-            $descriptorspec, $pipes, $cwd, null
+            $descriptorspec, $pipes, $cwd, NULL
         );
 
         if (is_resource($s3Proc)) {

@@ -3,7 +3,10 @@
 
 function run()
 {
-	
+    $help = array(
+        "--remote"  => "remote couchbase uri -> 10.34.34.1:11211",
+        "--verbose" => "log everything",
+    );
 }
 
 run();

@@ -2,11 +2,11 @@
 
 function run()
 {
-    $options = getopt('h:b:d:s');
+    $options = getopt('h:b:d:s:f');
 
     $host           = isset($options['h']) ? $options['h'] : false;
     $bucket         = isset($options['b']) ? $options['b'] : false;
-    $dest           = isset($options['d']) ? $options['d'] : $bucket . '_' . date('Ymd-s', time());
+    $dest           = isset($options['d']) ? $options['d'] : $bucket . '_' . time();
     $s3Backup       = isset($options['s']) ? true : false;
     $s3BackupBucket = 's3://crowdpark-berlin-deploy/backups/';
     $pipes          = array();
@@ -23,23 +23,24 @@ function run()
 
     $skip        = 0;
     $limit       = 1000;
-    $baseUrl     = 'http://' . $host . ':8092/' . $bucket . '/_all_docs?skip=0&limit=1';
+    $baseUrl     = 'http://' . $host . ':8092/' . $bucket . '/_all_docs?skip=0&limit=0';
     $fetchUrl    = 'http://' . $host . ':8092/' . $bucket . '/_all_docs?skip=%d&limit=%d&include_docs=true';
     $destDir     = $cwd . '/' . $dest;
     $destArchive = $dest . '.tar.gz';
 
     chdir($cwd);
 
-    printf("baseUrl = '%s'\n", $baseUrl);
+    printf("baseUrl = '%s'" . PHP_EOL, $baseUrl);
 
     $bucketStatus = json_decode(file_get_contents($baseUrl), true);
 
     $rows = $bucketStatus['total_rows'];
     $runs = ceil($rows / $limit) + 1;
 
-    printf("%s contains %d elements = %d single backup files in '%s'\n", $bucket, $rows, $runs, $destDir);
-
-    mkdir($destDir, 0777);
+    printf("%s contains %d elements = %d single backup files in '%s'" . PHP_EOL, $bucket, $rows, $runs, $destDir);
+    printf("Mkdir = " . $destDir . PHP_EOL);
+    
+    mkdir($destDir);
 
     for ($i = 0; $i < $runs; $i++) {
         $filename = $destDir . '/' . $i . '.json';

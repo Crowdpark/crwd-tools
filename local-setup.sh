@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 ROOT=~/www/crwd-tools
 source $ROOT/functions.sh
 

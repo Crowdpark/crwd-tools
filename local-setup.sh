@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source functions.sh
+
+ROOT=~/www/crwd-tools
+source $ROOT/functions.sh
 
 if [ -f /usr/local/bin/brew ]
 	then
@@ -59,6 +61,13 @@ for i in $(ls -1 scripts | grep -i \.sh)
 do
 	ln -s $(pwd)/scripts/$i $HOME/bin/$i
 done
+
+for i in $(ls -1 scripts/bash)
+do
+	ln -s $(pwd)/scripts/bash/$i $HOME/bin/$i
+done
+
+ln -s $(pwd)/local-setup.sh $HOME/bin/local-setup
 
 if grep crwd-tools $HOME/.profile > /dev/null 2>&1
 	then

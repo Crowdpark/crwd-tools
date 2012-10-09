@@ -1,0 +1,11 @@
+#!/bin/sh
+
+ if [ "$1" == "" ]
+	then
+		echo "Usage: gtcl $0"
+	else	
+		git clone --recurse-submodules --progress $1
+fi
+
+exit
+# EOF

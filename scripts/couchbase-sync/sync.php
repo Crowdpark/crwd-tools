@@ -1,4 +1,4 @@
-#!/usr/bin/php -d memory_limit=536870912
+#!/usr/bin/env php -d memory_limit=536870912
 <?php
 include __DIR__ . "/../../library/Processus/bin/initProcessus.php";
 

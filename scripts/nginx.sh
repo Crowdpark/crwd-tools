@@ -1,7 +1,7 @@
 #!/bin/sh
 
 daemon=nginx
-executable=/usr/local/sbin/$daemon
+executable=/usr/local/bin/$daemon
 
 case "$1" in
 start)

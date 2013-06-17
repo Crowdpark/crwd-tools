@@ -58,7 +58,7 @@ else
 	ln -s scripts/nginx.sh $HOME/bin/nginx.sh
 fi
 
-[ "$(psgrep -a nginx | grep root)" ] && nginx.sh stop
+# [ "$(psgrep -a nginx | grep root)" ] && nginx.sh stop
 
 nginx.sh start
 

@@ -42,7 +42,6 @@ gsed -i "s/crowdpark/$USER/" conf/nginx/nginx.conf
 cp conf/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf
 
 find /usr/local/etc -name php\*fpm.conf -exec gsed -i 's/daemonize.*/daemonize = yes ; defaul is no/' {} \;
-find /usr/local/etc -name nginx\nginx.conf -exec gsed -i 's/daemonize.*/daemonize = yes ; defaul is no/' {} \;
 
 mkdir -p /usr/local/var/run
 mkdir -p /usr/local/var/log

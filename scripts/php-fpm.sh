@@ -5,15 +5,15 @@ executable=/usr/local/sbin/$daemon
 
 case "$1" in
 start)
-   $executable
+   sudo $executable
    [ $? -eq 0 ] && echo "$daemon started..."
 ;;
 stop)
-   killall $daemon
+   sudo killall $daemon
    [ $? -eq 0 ] && echo "$daemon stopped..."
 ;;
 test)
-   $executable -t
+   sudo $executable -t
    [ $? -eq 0 ] && echo "$daemon reloaded..."
 ;;
 restart)

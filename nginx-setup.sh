@@ -35,7 +35,7 @@ if [ -f /usr/local/etc/nginx/nginx.conf.dist ]
 then
 	true
 else
-	cp /usr/local/etc/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf.dist
+	cp /usr/local/etc/nginx/nginx.conf /usr/local/etc/nginx/nginx.dist
 fi
 
 gsed -i "s/crowdpark/$USER/" conf/nginx/nginx.conf
